@@ -42,28 +42,28 @@ npm run dev
 ```
 ## Frontend
 
-Responsive Navbar
-Hero Section with CTA
-Reusable Card Components
-Search Functionality
-Add Stay Form
-Edit Stay Modal
-Delete Stay Button
-Responsive UI (Tailwind CSS)
+*Responsive Navbar
+*Hero Section with CTA
+*Reusable Card Components
+*Search Functionality
+*Add Stay Form
+*Edit Stay Modal
+*Delete Stay Button
+*Responsive UI (Tailwind CSS)
 
 ## Backend
-REST API using Express.js
-MongoDB database integration
-Full CRUD operations
-Search API endpoint
-Responsive Navbar
-Hero Section with CTA
-Reusable Card Components
-Search Functionality
-Add Stay Form
-Edit Stay Modal
-Delete Stay Button
-Responsive UI (Tailwind CSS)
+*REST API using Express.js
+*MongoDB database integration
+*Full CRUD operations
+*Search API endpoint
+*Responsive Navbar
+*Hero Section with CTA
+*Reusable Card Components
+*Search Functionality
+*Add Stay Form
+*Edit Stay Modal
+*Delete Stay Button
+*Responsive UI (Tailwind CSS)
 
 ## Author
 
