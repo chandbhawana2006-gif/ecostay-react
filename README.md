@@ -68,13 +68,20 @@ npm run dev
 
 ## Database Schema
 Stay Model (MongoDB / Mongoose)
+
+
 {
+
   name: String,
+  
   location: String,
+  
   price: Number
 }
+
      
 ## Tech Stack
+
 # Frontend
 
 React.js,
@@ -96,18 +103,23 @@ http://localhost:5000/api/stays
 ## Installation
 
 ## Clone Repository
+
 git clone https://github.com/your-username/ecostay.git
 
 ## Install Frontend
 
 cd frontend
+
 npm install
+
 npm run dev
 
 ## Install Backend
 
 cd backend
+
 npm install
+
 npm run dev
 
 ## Create .env file in backend:
