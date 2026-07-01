@@ -128,6 +128,9 @@ MONGO_URI=your_mongodb_connection_string
 
 PORT=5000
 
+## Database Schema
+
+![EcoStay Schema Diagram](images/schema-diagram.png)
 
 ## Author
 
