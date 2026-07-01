@@ -1,6 +1,7 @@
 # EcoStay
 
-EcoStay is a modern eco-tourism and homestay booking platform built with React, Vite, Tailwind CSS, and React Router.
+EcoStay is a full-stack eco-tourism and homestay booking platform built using React, Vite, Tailwind CSS, Node.js, Express, and MongoDB.
+It allows users to create, read, update, delete, and search eco stays.
 
 ## Features
 
@@ -64,6 +65,58 @@ npm run dev
 *Edit Stay Modal
 *Delete Stay Button
 *Responsive UI (Tailwind CSS)
+
+## Database Schema
+Stay Model (MongoDB / Mongoose)
+{
+  name: String,
+  location: String,
+  price: Number
+}
+     
+## Tech Stack
+# Frontend
+
+React.js,
+Vite,
+Tailwind CSS,
+React Router DOM,
+
+# Backend
+
+Node.js,
+Express.js,
+MongoDB.
+Mongoose,
+
+## API Base URL
+
+http://localhost:5000/api/stays
+
+## Installation
+
+## Clone Repository
+git clone https://github.com/your-username/ecostay.git
+
+## Install Frontend
+
+cd frontend
+npm install
+npm run dev
+
+## Install Backend
+
+cd backend
+npm install
+npm run dev
+
+Environment Variables
+
+Create .env file in backend:
+
+MONGO_URI=your_mongodb_connection_string
+PORT=5000
+
 
 ## Author
 
