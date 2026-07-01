@@ -110,11 +110,10 @@ cd backend
 npm install
 npm run dev
 
-Environment Variables
-
-Create .env file in backend:
+## Create .env file in backend:
 
 MONGO_URI=your_mongodb_connection_string
+
 PORT=5000
 
 
