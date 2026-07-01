@@ -5,10 +5,16 @@ import Hero from "../components/Hero";
 import Card from "../components/Card";
 
 export default function Home() {
-  console.log("HOME RENDERED"); // ✅ yahan hona chahiye
+  console.log("HOME RENDERED");
 
   const [stays, setStays] = useState([]);
 
+  const [name, setName] = useState("");
+  const [location, setLocation] = useState("");
+  const [price, setPrice] = useState("");
+
+  const [editStay, setEditStay] = useState(null);
+  const [search, setSearch] = useState("");
   useEffect(() => {
     console.log("API CALL START");
 
@@ -20,11 +26,124 @@ export default function Home() {
       })
       .catch((err) => console.error("Error fetching stays:", err));
   }, []);
-  
 
+  const addStay = async () => {
+    const response = await fetch("http://localhost:5000/api/stays", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        location,
+        price: Number(price),
+      }),
+    });
+
+    if (response.ok) {
+      setName("");
+      setLocation("");
+      setPrice("");
+
+      // refresh list (READ part working)
+      const res = await fetch("http://localhost:5000/api/stays");
+      const data = await res.json();
+      setStays(data);
+
+      alert("Stay Added Successfully!");
+    } else {
+      alert("Failed to add stay");
+    }
+  };
+  const deleteStay = async (id) => {
+    const response = await fetch(`http://localhost:5000/api/stays/${id}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      setStays(stays.filter((stay) => stay._id !== id));
+    } else {
+      alert("Failed to delete stay");
+    }
+  };
+  const searchStay = async () => {
+    if (!search) return;
+
+    const res = await fetch(
+      `http://localhost:5000/api/stays/search/${search}`
+    );
+
+    const data = await res.json();
+    setStays(data);
+  };
+  const resetStays = async () => {
+    const res = await fetch("http://localhost:5000/api/stays");
+    const data = await res.json();
+    setStays(data);
+  };
+  console.log("STAYS:", stays);
   return (
     <div className="bg-white dark:bg-gray-900 min-h-screen">
       <Hero />
+
+      {/* SEARCH BAR HERE */}
+      <div className="max-w-md mx-auto mt-6 flex gap-2">
+        <input
+          className="border p-2 w-full"
+          placeholder="Search stays..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <button
+          onClick={searchStay}
+          className="bg-black text-white px-4 rounded"
+        >
+          Search
+        </button>
+
+        <button
+          onClick={resetStays}
+          className="bg-gray-600 text-white px-4 rounded"
+        >
+          Reset
+        </button>
+      </div>
+      {/* Add Stay Form */}
+      <div className="max-w-md mx-auto mt-10 mb-10 space-y-3">
+        <input
+          className="border p-2 w-full"
+          placeholder="Stay Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <input
+          className="border p-2 w-full"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+
+        <input
+          className="border p-2 w-full"
+          type="number"
+          placeholder="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+        />
+
+        <button
+          onClick={addStay}
+          className="bg-green-700 text-white px-4 py-2 rounded w-full"
+        >
+          Add Stay
+        </button>
+      </div>
+
+
+
+
 
       {/* Featured Stays */}
       <section className="max-w-7xl mx-auto px-6 py-16">
@@ -46,14 +165,28 @@ export default function Home() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {stays.map((stay) => (
-            <Card
-              key={stay.id}
-              image="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800"
-              title={stay.name || "Eco Stay"}
-              description={stay.location || "Beautiful Location"}
-              price={stay.price || 0}
-              rating="4.8"
-            />
+            <div key={stay._id}>
+              <Card
+                image="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800"
+                title={stay.name || "Eco Stay"}
+                description={stay.location || "Beautiful Location"}
+                price={stay.price || 0}
+                rating="4.8"
+              />
+
+              <button
+                onClick={() => deleteStay(stay._id)}
+                className="bg-red-600 text-white px-4 py-2 mt-2 rounded"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setEditStay(stay)}
+                className="bg-blue-600 text-white px-4 py-2 mt-2 rounded"
+              >
+                Edit
+              </button>
+            </div>
           ))}
         </div>
       </section>
@@ -118,6 +251,59 @@ export default function Home() {
           </a>
         </div>
       </section>
+
+      {editStay && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-xl w-96 space-y-3">
+
+            <h2 className="text-xl font-bold">Edit Stay</h2>
+
+            <input
+              className="border p-2 w-full"
+              value={editStay.name}
+              onChange={(e) =>
+                setEditStay({ ...editStay, name: e.target.value })
+              }
+            />
+
+            <input
+              className="border p-2 w-full"
+              value={editStay.location}
+              onChange={(e) =>
+                setEditStay({ ...editStay, location: e.target.value })
+              }
+            />
+
+            <input
+              className="border p-2 w-full"
+              value={editStay.price}
+              onChange={(e) =>
+                setEditStay({ ...editStay, price: e.target.value })
+              }
+            />
+
+            <button
+              onClick={async () => {
+                await fetch(`http://localhost:5000/api/stays/${editStay._id}`, {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(editStay),
+                });
+
+                setEditStay(null);
+
+                const res = await fetch("http://localhost:5000/api/stays");
+                const data = await res.json();
+                setStays(data);
+              }}
+              className="bg-green-600 text-white px-4 py-2 rounded w-full"
+            >
+              Save
+            </button>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }

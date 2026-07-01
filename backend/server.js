@@ -1,118 +1,141 @@
+const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+
+const Stay = require("./models/Stay");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-const stays = [
-    {
-        id: 1,
-        name: "Mountain View Stay",
-        location: "Manali",
-        price: 2500
-    },
-    {
-        id: 2,
-        name: "Eco Forest Hut",
-        location: "Nainital",
-        price: 1800
-    }
-];
+// Connect to MongoDB
+mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log("MongoDB connected successfully");
+    })
+    .catch((err) => {
+        console.log(err);
+    });
 
 // GET all stays
-app.get("/api/stays", (req, res) => {
-    res.status(200).json(stays);
-});
-
-// GET stay by ID
-app.get("/api/stays/:id", (req, res) => {
-    const stay = stays.find(
-        s => s.id === parseInt(req.params.id)
-    );
-
-    if (!stay) {
-        return res.status(404).json({
-            message: "Stay not found"
-        });
+app.get("/api/stays", async (req, res) => {
+    try {
+        const stays = await Stay.find();
+        res.status(200).json(stays);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
-    res.status(200).json(stay);
-});
-
-// POST create stay
-app.post("/api/stays", (req, res) => {
-    const newStay = {
-        id: stays.length + 1,
-        ...req.body
-    };
-
-    stays.push(newStay);
-
-    res.status(201).json(newStay);
-});
-
-// PUT update stay
-app.put("/api/stays/:id", (req, res) => {
-    const index = stays.findIndex(
-        s => s.id === parseInt(req.params.id)
-    );
-
-    if (index === -1) {
-        return res.status(404).json({
-            message: "Stay not found"
-        });
-    }
-
-    stays[index] = {
-        ...stays[index],
-        ...req.body
-    };
-
-    res.status(200).json(stays[index]);
-});
-
-// DELETE stay
-app.delete("/api/stays/:id", (req, res) => {
-    const index = stays.findIndex(
-        s => s.id === parseInt(req.params.id)
-    );
-
-    if (index === -1) {
-        return res.status(404).json({
-            message: "Stay not found"
-        });
-    }
-
-    stays.splice(index, 1);
-
-    res.status(204).send();
 });
 
 // SEARCH stay
-app.get("/api/stays/search/:name", (req, res) => {
-    const result = stays.filter(stay =>
-        stay.name
-            .toLowerCase()
-            .includes(req.params.name.toLowerCase())
-    );
+app.get("/api/stays/search/:name", async (req, res) => {
+    try {
+        const result = await Stay.find({
+            name: {
+                $regex: req.params.name,
+                $options: "i",
+            },
+        });
 
-    res.status(200).json(result);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// GET stay by ID
+app.get("/api/stays/:id", async (req, res) => {
+    try {
+        const stay = await Stay.findById(req.params.id);
+
+        if (!stay) {
+            return res.status(404).json({
+                message: "Stay not found",
+            });
+        }
+
+        res.status(200).json(stay);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// POST create stay
+app.post("/api/stays", async (req, res) => {
+    try {
+        const stay = new Stay({
+            name: req.body.name,
+            location: req.body.location,
+            price: req.body.price,
+        });
+
+        const savedStay = await stay.save();
+
+        res.status(201).json(savedStay);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// PUT update stay
+app.put("/api/stays/:id", async (req, res) => {
+    try {
+        const { name, location, price } = req.body;
+
+        const updatedStay = await Stay.findByIdAndUpdate(
+            req.params.id,
+            { name, location, price },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedStay) {
+            return res.status(404).json({ message: "Stay not found" });
+        }
+
+        res.status(200).json(updatedStay);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// DELETE stay
+app.delete("/api/stays/:id", async (req, res) => {
+    try {
+        const deletedStay = await Stay.findByIdAndDelete(req.params.id);
+
+        if (!deletedStay) {
+            return res.status(404).json({
+                message: "Stay not found",
+            });
+        }
+
+        res.status(200).json({
+            message: "Stay deleted successfully",
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 
 // Home route
 app.get("/", (req, res) => {
     res.send("EcoStay Backend Running");
 });
+
+// Error handling
 app.use((err, req, res, next) => {
     console.error(err.stack);
 
     res.status(500).json({
-        message: "Internal Server Error"
+        message: "Internal Server Error",
     });
 });
-app.listen(5000, () => {
-    console.log("Server running on port 5000");
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
