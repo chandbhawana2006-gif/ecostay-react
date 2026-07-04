@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const staySchema = new mongoose.Schema({
     name: {
@@ -15,4 +15,4 @@ const staySchema = new mongoose.Schema({
     },
 });
 
-export default mongoose.model("Stay", staySchema);
+module.exports = mongoose.model("Stay", staySchema);
