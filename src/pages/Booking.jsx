@@ -1,6 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Booking() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/login");
+        }
+    }, [navigate]);
     const [booked, setBooked] = useState(false);
     const [phoneError, setPhoneError] = useState("");
 

@@ -1,3 +1,4 @@
+import LoginSuccess from "./pages/LoginSuccess";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "./layouts/MainLayout";
@@ -7,12 +8,17 @@ import About from "./pages/About";
 import Booking from "./pages/Booking";
 import Contact from "./pages/Contact";
 import ComponentsDemo from "./pages/ComponentsDemo";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login-success" element={<LoginSuccess />} />
         <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
 
@@ -23,12 +29,20 @@ export default function App() {
 
           <Route
             path="booking"
-            element={<Booking />}
+            element={
+              <ProtectedRoute>
+                <Booking />
+              </ProtectedRoute>}
+
           />
 
           <Route
-            path="contact"
-            element={<Contact />}
+            path="/contact"
+            element={
+              <ProtectedRoute>
+                <Contact />
+              </ProtectedRoute>
+            }
           />
 
           <Route
