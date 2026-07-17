@@ -11,7 +11,7 @@ import ComponentsDemo from "./pages/ComponentsDemo";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import AIPlanner from "./pages/AIPlanner";
 export default function App() {
   return (
     <BrowserRouter>
@@ -49,6 +49,15 @@ export default function App() {
             path="components"
             element={<ComponentsDemo />}
           />
+          <Route
+            path="ai-planner"
+            element={
+              <ProtectedRoute>
+                <AIPlanner />
+              </ProtectedRoute>
+            }
+          />
+
         </Route>
 
       </Routes>

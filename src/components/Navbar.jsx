@@ -72,6 +72,9 @@ export default function Navbar() {
           <NavLink to="/components" className={linkClass}>
             Components
           </NavLink>
+          <NavLink to="/ai-planner" className={linkClass}>
+            AI Planner
+          </NavLink>
 
         </div>
 

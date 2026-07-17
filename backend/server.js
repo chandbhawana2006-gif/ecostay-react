@@ -1,3 +1,5 @@
+require("dotenv").config();
+const aiRoutes = require("./routes/ai");
 console.log("THIS IS MY SERVER");
 const authMiddleware = require("./middleware/authMiddleware");
 const authRoutes = require("./routes/auth");
@@ -24,6 +26,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/api/auth", authRoutes);
+app.use("/api/ai", aiRoutes);
 
 // Connect to MongoDB
 mongoose
